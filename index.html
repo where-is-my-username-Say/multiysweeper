@@ -3834,24 +3834,28 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
   // ─────────────────────────────────────────────────────────────────
   window.addEventListener('load', () => {
 
-    // Clear any previously stored fake leaderboard entries
+    // Strip ALL non-real entries from leaderboard storage (remove any entry where isMe !== true)
     try {
       ['solo', 'multiplayer'].forEach(mode => {
         ['easy', 'medium', 'hard', 'extreme'].forEach(diff => {
           const key = 'ms_lb_' + mode + '_' + diff;
-          const raw = localStorage.getItem(key);
-          if (raw) {
-            try {
-              const list = JSON.parse(raw);
-              // If the stored list has known fake names or no isMe flag at all, wipe it
-              const hasFake = Array.isArray(list) && list.some(e => !e.isMe && (
-                ['CoralKing','AquaNinja','TideHunter','ShellSeeker','SandStorm','SeaBreeze','CaptainFin','WaveRider',
-                 'LagoonFox','DeepDiver','ReefMaster','SunBather','CrabLord','Starfish7','CaptainBarnaby','OceanDrift',
-                 'NeptuneX','KelpKnight','SaltWaterSam','SurfShark','TreasureTrove','AnchorDown','IslandBeacon'].some(fn => e.holder.startsWith(fn))
-              ));
-              if (hasFake) localStorage.removeItem(key);
-            } catch(e2) {}
-          }
+          try {
+            const raw = localStorage.getItem(key);
+            if (!raw) return;
+            const list = JSON.parse(raw);
+            if (!Array.isArray(list)) { localStorage.removeItem(key); return; }
+            // Keep ONLY entries the current player submitted (isMe:true)
+            const real = list.filter(e => e && e.isMe === true);
+            if (real.length !== list.length) {
+              // Had fake/bot entries — replace with only real ones
+              if (real.length === 0) {
+                localStorage.removeItem(key);
+              } else {
+                real.forEach((e, i) => { e.rank = i + 1; });
+                localStorage.setItem(key, JSON.stringify(real));
+              }
+            }
+          } catch(e2) { try { localStorage.removeItem('ms_lb_' + mode + '_' + diff); } catch(e3) {} }
         });
       });
     } catch(e) {}
