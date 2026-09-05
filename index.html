@@ -232,7 +232,156 @@
     </div>
   </div>
 </div>
-<script>// ═══════════════════════════════════════════════// STATE// ═══════════════════════════════════════════════const AVATARS = ['🦊','🐺','🦁','🐯','🦅','🦎','🐸','🦋','🐉','🦄','🐙','🦑','🐻','🐼'];const DIFFS = {  easy:    {label:'Easy',    emoji:'🌱',color:'#22c55e',desc:'10×10 · 15 mines', rows:10,cols:10,mines:15},  medium:  {label:'Medium',  emoji:'🔥',color:'#f59e0b',desc:'16×16 · 40 mines', rows:16,cols:16,mines:40},  hard:    {label:'Hard',    emoji:'💀',color:'#ef4444',desc:'24×24 · 99 mines', rows:24,cols:24,mines:99},  extreme: {label:'Extreme', emoji:'☢️',color:'#a855f7',desc:'40×40 · 300 mines',rows:40,cols:40,mines:300},};let selAvatar = '🦊';let selDiff   = 'medium';let gameBoard = [];let minesLeft = 40;let gameOver  = false;// ═══════════════════════════════════════════════// GOOGLE AUTH// Replace YOUR_CLIENT_ID with your actual OAuth Client ID from// console.cloud.google.com → APIs & Services → Credentials// ═══════════════════════════════════════════════const GOOGLE_CLIENT_ID = '993001184568-dcqt2romshpqup7bnjulo25ktscqvo4n.apps.googleusercontent.com';let googleUser = null; // { name, email, picture, sub }function initGoogleAuth() {  if (typeof google === 'undefined') {    // GSI not loaded yet (offline / blocked) — go straight to login screen    showScreen('login');    return;  }  google.accounts.id.initialize({    client_id: GOOGLE_CLIENT_ID,    callback: onGoogleSignIn,    auto_select: false,    cancel_on_tap_outside: true,  });  // Check if already signed in via stored session  const saved = sessionStorage.getItem('guser');  if (saved) {    googleUser = JSON.parse(saved);    applyGoogleUser();    showScreen('landing');    landingEntrance();  } else {    showScreen('login');    gsap.from('.login-card', {y:40, opacity:0, duration:.5, ease:'back.out(1.5)', delay:.3});  }}function signInWithGoogle() {  play('snd_click', 0.7);  if (typeof google === 'undefined') {    alert('Google Sign-In is not available. Check your Client ID or internet connection.');    return;  }  google.accounts.id.prompt((notification) => {    // If One Tap is suppressed, fall back to renderButton flow    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {      // Render a hidden button and click it      const tmp = document.createElement('div');      tmp.style.display = 'none';      document.body.appendChild(tmp);      google.accounts.id.renderButton(tmp, { type:'standard', theme:'outline', size:'large' });      setTimeout(() => { tmp.querySelector('div[role=button]')?.click(); }, 100);    }  });}function onGoogleSignIn(response) {function saveUserSession() {  if (!googleUser) return;  localStorage.setItem(`user_stats_${googleUser.sub}`, JSON.stringify(googleUser.stats || {}));  sessionStorage.setItem('guser', JSON.stringify(googleUser));}  // Decode the JWT id_token (no library needed — just parse the payload)  const payload = JSON.parse(atob(response.credential.split('.')[1]));  googleUser = {    name:    payload.name,    email:   payload.email,    picture: payload.picture,    sub:     payload.sub,  };  sessionStorage.setItem('guser', JSON.stringify(googleUser));  applyGoogleUser();  play('snd_menuopen', 0.8);  showScreen('landing');  landingEntrance();}function applyGoogleUser() {  if (!googleUser) return;  // Set nickname from Google name  document.getElementById('inp-nick').value = googleUser.name.split(' ')[0];  // Show user badge with real profile picture  document.getElementById('user-badge').style.display = 'flex';  document.getElementById('user-pfp').src = googleUser.picture;  document.getElementById('user-name').textContent = googleUser.name;  // Hide avatar row — pfp replaces it  document.getElementById('av-row').parentElement.style.display = 'none';}function signInAsGuest() {  play('snd_click', 0.7);  googleUser = null;  sessionStorage.removeItem('guser');  document.getElementById('user-badge').style.display = 'none';  document.getElementById('av-row').parentElement.style.display = 'block';  showScreen('landing');  landingEntrance();}function signOut() {  play('snd_click', 0.7);  googleUser = null;  sessionStorage.removeItem('guser');  if (typeof google !== 'undefined') google.accounts.id.disableAutoSelect();  document.getElementById('user-badge').style.display = 'none';  document.getElementById('av-row').parentElement.style.display = 'block';  showScreen('login');  gsap.from('.login-card', {y:40, opacity:0, duration:.5, ease:'back.out(1.5)', delay:.1});}// ═══════════════════════════════════════════════// ═══════════════════════════════════════════════
+<script>// ═══════════════════════════════════════════════// STATE// ═══════════════════════════════════════════════const AVATARS = ['🦊','🐺','🦁','🐯','🦅','🦎','🐸','🦋','🐉','🦄','🐙','🦑','🐻','🐼'];const DIFFS = {  easy:    {label:'Easy',    emoji:'🌱',color:'#22c55e',desc:'10×10 · 15 mines', rows:10,cols:10,mines:15},  medium:  {label:'Medium',  emoji:'🔥',color:'#f59e0b',desc:'16×16 · 40 mines', rows:16,cols:16,mines:40},  hard:    {label:'Hard',    emoji:'💀',color:'#ef4444',desc:'24×24 · 99 mines', rows:24,cols:24,mines:99},  extreme: {label:'Extreme', emoji:'☢️',color:'#a855f7',desc:'40×40 · 300 mines',rows:40,cols:40,mines:300},};let selAvatar = '🦊';let selDiff   = 'medium';let gameBoard = [];let minesLeft = 40;let gameOver  = false;// ═══════════════════════════════════════════════// GOOGLE AUTH// Replace YOUR_CLIENT_ID with your actual OAuth Client ID from// console.cloud.google.com → APIs & Services → Credentials// ═══════════════════════════════════════════════const GOOGLE_CLIENT_ID = '993001184568-dcqt2romshpqup7bnjulo25ktscqvo4n.apps.googleusercontent.com';
+let googleUser = null; // { name, email, picture, sub }
+
+function getUserStats() {
+  if (!googleUser) return { totalScore: 0, gamesWon: 0, gamesPlayed: 0 };
+  try {
+    const raw = localStorage.getItem('ms_stats_' + googleUser.sub);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { totalScore: 0, gamesWon: 0, gamesPlayed: 0 };
+}
+
+function saveUserStats(stats) {
+  if (!googleUser) return;
+  try {
+    localStorage.setItem('ms_stats_' + googleUser.sub, JSON.stringify(stats));
+  } catch(e) {}
+}
+
+function recordGameStats(won, score) {
+  if (!googleUser) return;
+  const stats = getUserStats();
+  stats.gamesPlayed = (stats.gamesPlayed || 0) + 1;
+  if (won) {
+    stats.gamesWon = (stats.gamesWon || 0) + 1;
+    stats.totalScore = (stats.totalScore || 0) + score;
+  }
+  saveUserStats(stats);
+  updateUserStatsUI();
+}
+
+function updateUserStatsUI() {
+  if (!googleUser) return;
+  const stats = getUserStats();
+  const el = document.getElementById('user-stats-text');
+  if (el) {
+    el.textContent = `🏆 ${stats.gamesWon} wins · ⭐ ${stats.totalScore} pts`;
+  }
+}
+
+function initGoogleAuth() {
+  // Check if already signed in via persistent localStorage
+  const saved = localStorage.getItem('guser');
+  if (saved) {
+    try {
+      googleUser = JSON.parse(saved);
+      applyGoogleUser();
+      showScreen('landing');
+      landingEntrance();
+      return;
+    } catch(e) {
+      localStorage.removeItem('guser');
+    }
+  }
+
+  if (typeof google === 'undefined') {
+    showScreen('login');
+    return;
+  }
+  
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: onGoogleSignIn,
+    auto_select: true, // Automatically select account if previously signed in
+    cancel_on_tap_outside: true,
+  });
+
+  showScreen('login');
+  gsap.from('.login-card', { y: 40, opacity: 0, duration: .5, ease: 'back.out(1.5)', delay: .3 });
+}
+
+function signInWithGoogle() {
+  play('snd_click', 0.7);
+  if (typeof google === 'undefined') {
+    alert('Google Sign-In is not available. Check your Client ID or internet connection.');
+    return;
+  }
+  google.accounts.id.prompt((notification) => {
+    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+      const tmp = document.createElement('div');
+      tmp.style.display = 'none';
+      document.body.appendChild(tmp);
+      google.accounts.id.renderButton(tmp, { type: 'standard', theme: 'outline', size: 'large' });
+      setTimeout(() => { tmp.querySelector('div[role=button]')?.click(); }, 100);
+    }
+  });
+}
+
+function onGoogleSignIn(response) {
+  try {
+    const payload = JSON.parse(atob(response.credential.split('.')[1]));
+    googleUser = {
+      name: payload.name,
+      email: payload.email,
+      picture: payload.picture,
+      sub: payload.sub,
+    };
+    // Persist login state across full browser closes and restarts!
+    localStorage.setItem('guser', JSON.stringify(googleUser));
+    applyGoogleUser();
+    play('snd_menuopen', 0.8);
+    showScreen('landing');
+    landingEntrance();
+  } catch(e) {
+    console.error('Google Sign-In parse error:', e);
+  }
+}
+
+function applyGoogleUser() {
+  if (!googleUser) return;
+  document.getElementById('inp-nick').value = googleUser.name.split(' ')[0];
+  const badge = document.getElementById('user-badge');
+  if (badge) badge.style.display = 'flex';
+  const pfp = document.getElementById('user-pfp');
+  if (pfp) pfp.src = googleUser.picture;
+  const name = document.getElementById('user-name');
+  if (name) name.textContent = googleUser.name;
+  
+  updateUserStatsUI();
+  
+  const avWrap = document.getElementById('av-wrap');
+  if (avWrap) avWrap.style.display = 'none';
+}
+
+function signInAsGuest() {
+  play('snd_click', 0.7);
+  googleUser = null;
+  localStorage.removeItem('guser');
+  const badge = document.getElementById('user-badge');
+  if (badge) badge.style.display = 'none';
+  const avWrap = document.getElementById('av-wrap');
+  if (avWrap) avWrap.style.display = 'block';
+  showScreen('landing');
+  landingEntrance();
+}
+
+function signOut() {
+  play('snd_click', 0.7);
+  googleUser = null;
+  localStorage.removeItem('guser');
+  if (typeof google !== 'undefined') google.accounts.id.disableAutoSelect();
+  const badge = document.getElementById('user-badge');
+  if (badge) badge.style.display = 'none';
+  const avWrap = document.getElementById('av-wrap');
+  if (avWrap) avWrap.style.display = 'block';
+  showScreen('login');
+  gsap.from('.login-card', { y: 40, opacity: 0, duration: .5, ease: 'back.out(1.5)', delay: .1 });
+}
+
+// ═══════════════════════════════════════════════
 // SOUND ENGINE & VISIBILITY / IN-SITE CONTROLS
 // ═══════════════════════════════════════════════
 const SND = {};
@@ -981,6 +1130,7 @@ function showResult(won) {
       bestBanner.style.display = 'block';
     }
   }
+  recordGameStats(won, playerScore);
   document.getElementById('result-overlay').classList.add('show');
 }
 
