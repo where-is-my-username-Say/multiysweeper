@@ -1548,47 +1548,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
     return isNew;
   }
 
-  // Generate realistic global top-100 initial leaderboards
+  // Returns empty list — leaderboard only has real player entries
   function generateDefaultGlobalLeaderboard(mode, diff) {
-    const baseTimes = {
-      easy: 12,
-      medium: 48,
-      hard: 130,
-      extreme: 290
-    };
-    const mult = (mode === 'multiplayer') ? 0.85 : 1.0;
-    const startSec = Math.round((baseTimes[diff] || 30) * mult);
-
-    const names = [
-      'CoralKing', 'AquaNinja', 'TideHunter', 'ShellSeeker', 'SandStorm', 'SeaBreeze', 'CaptainFin', 'WaveRider',
-      'LagoonFox', 'DeepDiver', 'ReefMaster', 'SunBather', 'CrabLord', 'Starfish7', 'CaptainBarnaby', 'OceanDrift',
-      'NeptuneX', 'KelpKnight', 'SaltWaterSam', 'SurfShark', 'TreasureTrove', 'AnchorDown', 'IslandBeacon', 'DolphinDash',
-      'Nautilus9', 'PearlDiver', 'SplashZone', 'PelicanPete', 'HarborGuard', 'SquidSlayer', 'CoastWalker', 'SunnyGamer',
-      'SailorJack', 'TidalWave', 'MarinerJoe', 'SirenSong', 'BlueCurrent', 'WindSurfer', 'BeaconRay', 'CoralSpire'
-    ];
-    const countries = ['🇺🇸 USA', '🇬🇧 UK', '🇯🇵 JPN', '🇩🇪 GER', '🇫🇷 FRA', '🇨🇦 CAN', '🇦🇺 AUS', '🇧🇷 BRA', '🇰🇷 KOR', '🇪🇸 ESP', '🇸🇦 KSA', '🇦🇪 UAE'];
-    const avatars = ['🦊','🐺','🦁','🐯','🦅','🦎','🐸','🦋','🐉','🦄','🐙','🦑','🐻','🐼','👑','⚡'];
-
-    const list = [];
-    let curTime = startSec;
-    for (let rank = 1; rank <= 100; rank++) {
-      const nick = names[(rank - 1) % names.length] + (rank > names.length ? (rank * 3) : '');
-      const flag = countries[rank % countries.length];
-      const av = avatars[rank % avatars.length];
-      const daysAgo = Math.floor(rank / 4);
-      const date = new Date(Date.now() - daysAgo * 86400000).toLocaleDateString();
-      list.push({
-        rank: rank,
-        holder: nick,
-        av: av,
-        country: flag,
-        time: curTime,
-        date: date,
-        isMe: false
-      });
-      curTime += Math.max(1, Math.floor(Math.random() * 3));
-    }
-    return list;
+    return [];
   }
 
   function getGlobalLeaderboard(mode, diff) {
@@ -1678,6 +1640,18 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 
     const list = getGlobalLeaderboard(curLbMode, curLbDiff);
     let myFoundRank = null;
+
+    if (!list || list.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td colspan="5" style="text-align:center;padding:32px 8px;color:var(--text-mid);font-size:13px;font-weight:700;">
+        🏖️ No scores yet! Be the first to clear this beach and claim #1!<br>
+        <span style="font-size:11px;font-weight:600;color:#9a7e5a;">Only real players appear here — no bots, no fakes.</span>
+      </td>`;
+      tbody.appendChild(tr);
+      const rankEl2 = document.getElementById('lb-my-rank');
+      if (rankEl2) rankEl2.innerHTML = 'Clear this beach to claim the #1 spot!';
+      return;
+    }
 
     list.forEach(entry => {
       const tr = document.createElement('tr');
@@ -3812,6 +3786,29 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
   // 17. WINDOW INITIALIZATION
   // ─────────────────────────────────────────────────────────────────
   window.addEventListener('load', () => {
+
+    // Clear any previously stored fake leaderboard entries
+    try {
+      ['solo', 'multiplayer'].forEach(mode => {
+        ['easy', 'medium', 'hard', 'extreme'].forEach(diff => {
+          const key = 'ms_lb_' + mode + '_' + diff;
+          const raw = localStorage.getItem(key);
+          if (raw) {
+            try {
+              const list = JSON.parse(raw);
+              // If the stored list has known fake names or no isMe flag at all, wipe it
+              const hasFake = Array.isArray(list) && list.some(e => !e.isMe && (
+                ['CoralKing','AquaNinja','TideHunter','ShellSeeker','SandStorm','SeaBreeze','CaptainFin','WaveRider',
+                 'LagoonFox','DeepDiver','ReefMaster','SunBather','CrabLord','Starfish7','CaptainBarnaby','OceanDrift',
+                 'NeptuneX','KelpKnight','SaltWaterSam','SurfShark','TreasureTrove','AnchorDown','IslandBeacon'].some(fn => e.holder.startsWith(fn))
+              ));
+              if (hasFake) localStorage.removeItem(key);
+            } catch(e2) {}
+          }
+        });
+      });
+    } catch(e) {}
+
     buildAvatarRow();
     animateBg();
     renderActiveBeachesList();
