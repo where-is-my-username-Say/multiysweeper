@@ -698,9 +698,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
     </div>
     <div class="input-row">
       <label class="input-label">Your Nickname</label>
-      <input class="input-field" id="inp-nick" value="BeachBomber42" maxlength="20">
+      <input class="input-field" id="inp-nick" value="" placeholder="Your nickname..." maxlength="20">
     </div>
-    <div class="input-row" id="av-wrap">
+    <div class="input-row" id="av-wrap" style="display:none;">
       <label class="input-label">Pick Avatar</label>
       <div class="avatar-row" id="av-row"></div>
     </div>
@@ -722,7 +722,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
         <div class="mode-emoji">🌊</div>
         <div class="mode-label">Multiplayer</div>
         <div class="mode-desc">Play with real players online</div>
-        <div class="mode-soon">🔌 Needs server</div>
       </div>
     </div>
   </div>
@@ -1240,7 +1239,22 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 
     updateUserStatsUI();
     const avWrap = document.getElementById('av-wrap');
-    if (avWrap) avWrap.style.display = 'none';
+    if (avWrap) avWrap.style.display = 'block';
+  }
+
+  // Guest name adjectives/nouns for random nickname generation
+  const GUEST_NAMES = ["BeachRaider","TideSurfer","SandRunner","WaveHunter","SunDrifter","CoralSeeker","IslandFox","OceanGhost","ShellFinder","ReefChaser","DriftKing","TreasureHawk","SeaWalker","SaltBreeze","LagoonDiver","PalmShaker","AquaRaider","CoastGuard","BeachBomber","DepthSeeker"];
+
+  function getGuestNick() {
+    try {
+      const saved = localStorage.getItem('ms_guest_nick');
+      if (saved) return saved;
+    } catch(e) {}
+    const pick = GUEST_NAMES[Math.floor(Math.random() * GUEST_NAMES.length)];
+    const num = Math.floor(Math.random() * 90) + 10;
+    const nick = pick + num;
+    try { localStorage.setItem('ms_guest_nick', nick); } catch(e) {}
+    return nick;
   }
 
   function signInAsGuest() {
@@ -1250,7 +1264,13 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
     const badge = document.getElementById('user-badge');
     if (badge) badge.style.display = 'none';
     const avWrap = document.getElementById('av-wrap');
-    if (avWrap) avWrap.style.display = 'block';
+    if (avWrap) avWrap.style.display = 'none';
+    // Auto-assign guest nickname if the field is empty or still default
+    const nickInp = document.getElementById('inp-nick');
+    const defaultNick = 'BeachBomber42';
+    if (nickInp && (!nickInp.value.trim() || nickInp.value === defaultNick)) {
+      nickInp.value = getGuestNick();
+    }
     updateShellsUI();
     showScreen('landing');
     landingEntrance();
@@ -1456,6 +1476,33 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
   }
 
   function goMultiplayer() {
+    const nickInp = document.getElementById('inp-nick');
+    const nick = nickInp ? nickInp.value.trim() : '';
+    if (!nick || nick === 'BeachBomber42') {
+      // Prompt for a name
+      if (nickInp) {
+        nickInp.focus();
+        if (window.gsap) {
+          gsap.timeline()
+            .to(nickInp, { borderColor: '#ef4444', duration: .15 })
+            .to(nickInp, { borderColor: 'var(--sand-dark)', duration: .3, delay: .2 })
+            .to(nickInp, { borderColor: '#ef4444', duration: .15 })
+            .to(nickInp, { borderColor: 'var(--sand-dark)', duration: .3, delay: .2 });
+        }
+        // Show a small tooltip nudge
+        let tip = document.getElementById('nick-tip');
+        if (!tip) {
+          tip = document.createElement('div');
+          tip.id = 'nick-tip';
+          tip.style.cssText = 'font-size:11px;font-weight:800;color:#ef4444;margin-top:4px;text-align:center;';
+          nickInp.parentNode.appendChild(tip);
+        }
+        tip.textContent = '⚠️ Enter a nickname to play multiplayer!';
+        setTimeout(() => { if (tip) tip.remove(); }, 3000);
+      }
+      play('snd_explode', 0.4);
+      return;
+    }
     play('snd_menuopen', 0.7);
     renderActiveBeachesList();
     showScreen('multiplayer');
