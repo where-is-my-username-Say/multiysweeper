@@ -33,7 +33,56 @@
 .roster-name { font-family: 'Lilita One', cursive; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 75px; }
 .roster-status { font-family: 'Lilita One', cursive; font-size: 10px; color: var(--mint); }
 
-</style></head><body><!-- STATIC BG --><div id="bg">  <div class="sun"></div>  <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>  <div class="wave-layer wave1"></div><div class="wave-layer wave2"></div><div class="wave-layer wave3"></div>  <div class="sand-strip"></div>  <div class="palm"><div class="palm-leaf"></div><div class="palm-leaf"></div><div class="palm-leaf"></div><div class="palm-leaf"></div><div class="palm-leaf"></div></div>  <div class="bg-crab-static">🦀</div></div><!-- LOGIN --><div id="screen-login" class="screen">  <div class="logo-wrap">    <span class="logo-emoji">🪣</span>    <h1 class="logo-title">MultiySweeper</h1>    <p class="logo-sub">Multiplayer · Mine Hunting</p>  </div>  <div class="login-card">    <div class="login-title">Welcome, Beach Hunter!</div>    <div class="login-sub">Sign in to save your score and sweep some mines</div>    <button class="google-btn" onclick="signInWithGoogle()">      <svg class="google-logo" viewBox="0 0 24 24">        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>      </svg>      Continue with Google    </button>    <div class="divider"></div>    <button class="guest-btn" onclick="signInAsGuest()">👤 Play as Guest</button>  </div></div><!-- LANDING --><div id="screen-landing" class="screen">  <div class="logo-wrap">    <span class="logo-emoji" id="shovel">🪣</span>    <h1 class="logo-title">MultiySweeper</h1>  </div>  <div class="card">    <div class="user-badge" id="user-badge" style="display:none">      <img class="user-pfp" id="user-pfp" src="" alt="pfp">      <span class="user-name" id="user-name"></span>      <span class="user-signout" onclick="signOut()">sign out</span>    </div>    <div class="input-row">      <label class="input-label">Your Nickname</label>      <input class="input-field" id="inp-nick" value="BeachBomber42" maxlength="20">    </div>    <div class="input-row" id="av-wrap">      <label class="input-label">Pick Avatar</label>      <div class="avatar-row" id="av-row"></div>    </div>    <label class="input-label" style="margin-bottom:8px">Select Mode</label>    
+
+/* ── IN-SITE SOUND CONTROLS ── */
+.sound-controls-bar {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 500;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  user-select: none;
+}
+.sound-btn {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-family: 'Lilita One', cursive;
+  font-size: 12px;
+  color: var(--text-dark);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+}
+.sound-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+.sound-btn:active {
+  transform: scale(0.96);
+}
+.sound-btn.muted {
+  background: rgba(255, 240, 240, 0.9);
+  border-color: var(--coral);
+  color: #c62828;
+}
+
+</style></head><body>
+
+<!-- IN-SITE AUDIO CONTROLS (Persistent across all screens) -->
+<div class="sound-controls-bar">
+  <button class="sound-btn" id="btn-toggle-music" onclick="toggleMusic()">🎵 Music: ON</button>
+  <button class="sound-btn" id="btn-toggle-sfx" onclick="toggleSound()">🔊 SFX: ON</button>
+</div>
+<!-- STATIC BG --><div id="bg">  <div class="sun"></div>  <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>  <div class="wave-layer wave1"></div><div class="wave-layer wave2"></div><div class="wave-layer wave3"></div>  <div class="sand-strip"></div>  <div class="palm"><div class="palm-leaf"></div><div class="palm-leaf"></div><div class="palm-leaf"></div><div class="palm-leaf"></div><div class="palm-leaf"></div></div>  <div class="bg-crab-static">🦀</div></div><!-- LOGIN --><div id="screen-login" class="screen">  <div class="logo-wrap">    <span class="logo-emoji">🪣</span>    <h1 class="logo-title">MultiySweeper</h1>    <p class="logo-sub">Multiplayer · Mine Hunting</p>  </div>  <div class="login-card">    <div class="login-title">Welcome, Beach Hunter!</div>    <div class="login-sub">Sign in to save your score and sweep some mines</div>    <button class="google-btn" onclick="signInWithGoogle()">      <svg class="google-logo" viewBox="0 0 24 24">        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>      </svg>      Continue with Google    </button>    <div class="divider"></div>    <button class="guest-btn" onclick="signInAsGuest()">👤 Play as Guest</button>  </div></div><!-- LANDING --><div id="screen-landing" class="screen">  <div class="logo-wrap">    <span class="logo-emoji" id="shovel">🪣</span>    <h1 class="logo-title">MultiySweeper</h1>  </div>  <div class="card">    <div class="user-badge" id="user-badge" style="display:none">      <img class="user-pfp" id="user-pfp" src="" alt="pfp">      <span class="user-name" id="user-name"></span>      <span class="user-signout" onclick="signOut()">sign out</span>    </div>    <div class="input-row">      <label class="input-label">Your Nickname</label>      <input class="input-field" id="inp-nick" value="BeachBomber42" maxlength="20">    </div>    <div class="input-row" id="av-wrap">      <label class="input-label">Pick Avatar</label>      <div class="avatar-row" id="av-row"></div>    </div>    <label class="input-label" style="margin-bottom:8px">Select Mode</label>    
     <div style="margin-top: 10px;">
       <button class="btn btn-secondary" style="width: 100%;" onclick="showLeaderboard()">🏆 View Best Times (Leaderboard)</button>
     </div>
@@ -187,7 +236,23 @@
     </div>
   </div>
 </div>
-<script>// ═══════════════════════════════════════════════// STATE// ═══════════════════════════════════════════════const AVATARS = ['🦊','🐺','🦁','🐯','🦅','🦎','🐸','🦋','🐉','🦄','🐙','🦑','🐻','🐼'];const DIFFS = {  easy:    {label:'Easy',    emoji:'🌱',color:'#22c55e',desc:'10×10 · 15 mines', rows:10,cols:10,mines:15},  medium:  {label:'Medium',  emoji:'🔥',color:'#f59e0b',desc:'16×16 · 40 mines', rows:16,cols:16,mines:40},  hard:    {label:'Hard',    emoji:'💀',color:'#ef4444',desc:'24×24 · 99 mines', rows:24,cols:24,mines:99},  extreme: {label:'Extreme', emoji:'☢️',color:'#a855f7',desc:'40×40 · 300 mines',rows:40,cols:40,mines:300},};let selAvatar = '🦊';let selDiff   = 'medium';let gameBoard = [];let minesLeft = 40;let gameOver  = false;// ═══════════════════════════════════════════════// GOOGLE AUTH// Replace YOUR_CLIENT_ID with your actual OAuth Client ID from// console.cloud.google.com → APIs & Services → Credentials// ═══════════════════════════════════════════════const GOOGLE_CLIENT_ID = '993001184568-dcqt2romshpqup7bnjulo25ktscqvo4n.apps.googleusercontent.com';let googleUser = null; // { name, email, picture, sub }function initGoogleAuth() {  if (typeof google === 'undefined') {    // GSI not loaded yet (offline / blocked) — go straight to login screen    showScreen('login');    return;  }  google.accounts.id.initialize({    client_id: GOOGLE_CLIENT_ID,    callback: onGoogleSignIn,    auto_select: false,    cancel_on_tap_outside: true,  });  // Check if already signed in via stored session  const saved = sessionStorage.getItem('guser');  if (saved) {    googleUser = JSON.parse(saved);    applyGoogleUser();    showScreen('landing');    landingEntrance();  } else {    showScreen('login');    gsap.from('.login-card', {y:40, opacity:0, duration:.5, ease:'back.out(1.5)', delay:.3});  }}function signInWithGoogle() {  play('snd_click', 0.7);  if (typeof google === 'undefined') {    alert('Google Sign-In is not available. Check your Client ID or internet connection.');    return;  }  google.accounts.id.prompt((notification) => {    // If One Tap is suppressed, fall back to renderButton flow    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {      // Render a hidden button and click it      const tmp = document.createElement('div');      tmp.style.display = 'none';      document.body.appendChild(tmp);      google.accounts.id.renderButton(tmp, { type:'standard', theme:'outline', size:'large' });      setTimeout(() => { tmp.querySelector('div[role=button]')?.click(); }, 100);    }  });}function onGoogleSignIn(response) {function saveUserSession() {  if (!googleUser) return;  localStorage.setItem(`user_stats_${googleUser.sub}`, JSON.stringify(googleUser.stats || {}));  sessionStorage.setItem('guser', JSON.stringify(googleUser));}  // Decode the JWT id_token (no library needed — just parse the payload)  const payload = JSON.parse(atob(response.credential.split('.')[1]));  googleUser = {    name:    payload.name,    email:   payload.email,    picture: payload.picture,    sub:     payload.sub,  };  sessionStorage.setItem('guser', JSON.stringify(googleUser));  applyGoogleUser();  play('snd_menuopen', 0.8);  showScreen('landing');  landingEntrance();}function applyGoogleUser() {  if (!googleUser) return;  // Set nickname from Google name  document.getElementById('inp-nick').value = googleUser.name.split(' ')[0];  // Show user badge with real profile picture  document.getElementById('user-badge').style.display = 'flex';  document.getElementById('user-pfp').src = googleUser.picture;  document.getElementById('user-name').textContent = googleUser.name;  // Hide avatar row — pfp replaces it  document.getElementById('av-row').parentElement.style.display = 'none';}function signInAsGuest() {  play('snd_click', 0.7);  googleUser = null;  sessionStorage.removeItem('guser');  document.getElementById('user-badge').style.display = 'none';  document.getElementById('av-row').parentElement.style.display = 'block';  showScreen('landing');  landingEntrance();}function signOut() {  play('snd_click', 0.7);  googleUser = null;  sessionStorage.removeItem('guser');  if (typeof google !== 'undefined') google.accounts.id.disableAutoSelect();  document.getElementById('user-badge').style.display = 'none';  document.getElementById('av-row').parentElement.style.display = 'block';  showScreen('login');  gsap.from('.login-card', {y:40, opacity:0, duration:.5, ease:'back.out(1.5)', delay:.1});}// ═══════════════════════════════════════════════// SOUND ENGINE// ═══════════════════════════════════════════════const SND = {};let audioCtx = null;let bgAudio = null;let soundEnabled = true;function getCtx() {  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();  if (audioCtx.state === 'suspended') audioCtx.resume();  return audioCtx;}// Decode a base64 mp3 into an AudioBuffer and cache itasync function loadSnd(key, url) {
+<script>// ═══════════════════════════════════════════════// STATE// ═══════════════════════════════════════════════const AVATARS = ['🦊','🐺','🦁','🐯','🦅','🦎','🐸','🦋','🐉','🦄','🐙','🦑','🐻','🐼'];const DIFFS = {  easy:    {label:'Easy',    emoji:'🌱',color:'#22c55e',desc:'10×10 · 15 mines', rows:10,cols:10,mines:15},  medium:  {label:'Medium',  emoji:'🔥',color:'#f59e0b',desc:'16×16 · 40 mines', rows:16,cols:16,mines:40},  hard:    {label:'Hard',    emoji:'💀',color:'#ef4444',desc:'24×24 · 99 mines', rows:24,cols:24,mines:99},  extreme: {label:'Extreme', emoji:'☢️',color:'#a855f7',desc:'40×40 · 300 mines',rows:40,cols:40,mines:300},};let selAvatar = '🦊';let selDiff   = 'medium';let gameBoard = [];let minesLeft = 40;let gameOver  = false;// ═══════════════════════════════════════════════// GOOGLE AUTH// Replace YOUR_CLIENT_ID with your actual OAuth Client ID from// console.cloud.google.com → APIs & Services → Credentials// ═══════════════════════════════════════════════const GOOGLE_CLIENT_ID = '993001184568-dcqt2romshpqup7bnjulo25ktscqvo4n.apps.googleusercontent.com';let googleUser = null; // { name, email, picture, sub }function initGoogleAuth() {  if (typeof google === 'undefined') {    // GSI not loaded yet (offline / blocked) — go straight to login screen    showScreen('login');    return;  }  google.accounts.id.initialize({    client_id: GOOGLE_CLIENT_ID,    callback: onGoogleSignIn,    auto_select: false,    cancel_on_tap_outside: true,  });  // Check if already signed in via stored session  const saved = sessionStorage.getItem('guser');  if (saved) {    googleUser = JSON.parse(saved);    applyGoogleUser();    showScreen('landing');    landingEntrance();  } else {    showScreen('login');    gsap.from('.login-card', {y:40, opacity:0, duration:.5, ease:'back.out(1.5)', delay:.3});  }}function signInWithGoogle() {  play('snd_click', 0.7);  if (typeof google === 'undefined') {    alert('Google Sign-In is not available. Check your Client ID or internet connection.');    return;  }  google.accounts.id.prompt((notification) => {    // If One Tap is suppressed, fall back to renderButton flow    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {      // Render a hidden button and click it      const tmp = document.createElement('div');      tmp.style.display = 'none';      document.body.appendChild(tmp);      google.accounts.id.renderButton(tmp, { type:'standard', theme:'outline', size:'large' });      setTimeout(() => { tmp.querySelector('div[role=button]')?.click(); }, 100);    }  });}function onGoogleSignIn(response) {function saveUserSession() {  if (!googleUser) return;  localStorage.setItem(`user_stats_${googleUser.sub}`, JSON.stringify(googleUser.stats || {}));  sessionStorage.setItem('guser', JSON.stringify(googleUser));}  // Decode the JWT id_token (no library needed — just parse the payload)  const payload = JSON.parse(atob(response.credential.split('.')[1]));  googleUser = {    name:    payload.name,    email:   payload.email,    picture: payload.picture,    sub:     payload.sub,  };  sessionStorage.setItem('guser', JSON.stringify(googleUser));  applyGoogleUser();  play('snd_menuopen', 0.8);  showScreen('landing');  landingEntrance();}function applyGoogleUser() {  if (!googleUser) return;  // Set nickname from Google name  document.getElementById('inp-nick').value = googleUser.name.split(' ')[0];  // Show user badge with real profile picture  document.getElementById('user-badge').style.display = 'flex';  document.getElementById('user-pfp').src = googleUser.picture;  document.getElementById('user-name').textContent = googleUser.name;  // Hide avatar row — pfp replaces it  document.getElementById('av-row').parentElement.style.display = 'none';}function signInAsGuest() {  play('snd_click', 0.7);  googleUser = null;  sessionStorage.removeItem('guser');  document.getElementById('user-badge').style.display = 'none';  document.getElementById('av-row').parentElement.style.display = 'block';  showScreen('landing');  landingEntrance();}function signOut() {  play('snd_click', 0.7);  googleUser = null;  sessionStorage.removeItem('guser');  if (typeof google !== 'undefined') google.accounts.id.disableAutoSelect();  document.getElementById('user-badge').style.display = 'none';  document.getElementById('av-row').parentElement.style.display = 'block';  showScreen('login');  gsap.from('.login-card', {y:40, opacity:0, duration:.5, ease:'back.out(1.5)', delay:.1});}// ═══════════════════════════════════════════════// ═══════════════════════════════════════════════
+// SOUND ENGINE & VISIBILITY / IN-SITE CONTROLS
+// ═══════════════════════════════════════════════
+const SND = {};
+let audioCtx = null;
+let bgAudio = null;
+let musicMuted = localStorage.getItem('ms_music_muted') === 'true';
+let soundEnabled = localStorage.getItem('ms_sound_enabled') !== 'false';
+let wasPlayingBeforeBlur = false;
+
+function getCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+async function loadSnd(key, url) {
   try {
     const ctx = getCtx();
     const res = await fetch(url);
@@ -197,7 +262,136 @@
   } catch(e) {
     console.warn('Sound load failed for ' + key + ':', e);
   }
-}function play(key, vol=1, rate=1) {  if (!soundEnabled) return;  const buf = SND[key];  if (!buf) return;  try {    const ctx = getCtx();    const src = ctx.createBufferSource();    src.buffer = buf;    src.playbackRate.value = rate;    const gain = ctx.createGain();    gain.gain.value = vol;    src.connect(gain);    gain.connect(ctx.destination);    src.start();  } catch(e) {}}function startBgMusic() {  if (bgAudio) return;  bgAudio = new Audio('audio/bg_music.mp3');  bgAudio.loop = true;  bgAudio.volume = 0.28;  bgAudio.play().catch(()=>{});}function stopBgMusic() {  if (bgAudio) { bgAudio.pause(); bgAudio.currentTime = 0; }}// Load all sounds as soon as user interacts (to satisfy autoplay policy)let soundsLoaded = false;async function initSounds() {  if (soundsLoaded) return;  soundsLoaded = true;  await loadSnd("snd_click", "audio/snd_click.mp3");  await loadSnd("snd_hover", "audio/snd_hover.mp3");  await loadSnd("snd_flag", "audio/snd_flag.mp3");  await loadSnd("snd_menuopen", "audio/snd_menuopen.mp3");  await loadSnd("snd_menuclose", "audio/snd_menuclose.mp3");  await loadSnd("snd_shovel", "audio/snd_shovel.mp3");  await loadSnd("snd_bomb", "audio/snd_bomb.mp3");  await loadSnd("snd_victory", "audio/snd_victory.mp3");  startBgMusic();}// Trigger init on first interactiondocument.addEventListener('click', initSounds, {once: true});document.addEventListener('keydown', initSounds, {once: true});// ═══════════════════════════════════════════════// SCREEN MANAGEMENT// ═══════════════════════════════════════════════function showScreen(id) {  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));  document.getElementById('screen-'+id).classList.add('active');  document.getElementById('bg').style.display = (id === 'game') ? 'none' : 'block';  if (id === 'landing') play('snd_menuclose', 0.6);}function goSolo() {  play('snd_menuopen', 0.7);  buildSoloDiffGrid();  showScreen('solo');}function goMultiplayer() {  play('snd_menuopen', 0.7);  showScreen('multiplayer');}function startSolo() {  play('snd_menuopen', 0.8, 0.85);  gameOver = false;  playerScore = 0;  buildHUD();  buildBoard();  showScreen('game');  document.getElementById('result-overlay').classList.remove('show');  gsap.from('#board-wrap', {scale:.88, opacity:0, duration:.5, ease:'back.out(1.5)', delay:.05});  gsap.from('.hud', {y:-28, opacity:0, duration:.4, ease:'back.out(1.5)'});  startGameFX();}// ═══════════════════════════════════════════════// BUILD UI COMPONENTS// ═══════════════════════════════════════════════function buildAvatarRow() {  const row = document.getElementById('av-row');  row.innerHTML = '';  AVATARS.forEach(a => {    const b = document.createElement('button');    b.className = 'av-btn' + (a === selAvatar ? ' sel' : '');    b.textContent = a;    b.onclick = () => {      document.querySelectorAll('.av-btn').forEach(x => x.classList.remove('sel'));      b.classList.add('sel');      selAvatar = a;      gsap.fromTo(b, {scale:.7}, {scale:1, duration:.3, ease:'back.out(3)'});    };    row.appendChild(b);  });}function buildSoloDiffGrid() {  const grid = document.getElementById('solo-diff-grid');  grid.innerHTML = '';  Object.entries(DIFFS).forEach(([key, d]) => {    const b = document.createElement('div');    b.className = 'diff-btn' + (key === selDiff ? ' sel' : '');    b.innerHTML = `<span class="diff-emoji">${d.emoji}</span><div class="diff-label" style="color:${d.color}">${d.label}</div><div class="diff-desc">${d.desc}</div>`;    b.onclick = () => {      document.querySelectorAll('.diff-btn').forEach(x => x.classList.remove('sel'));      b.classList.add('sel');      selDiff = key;      gsap.fromTo(b,{scale:.9},{scale:1,duration:.25,ease:'back.out(2)'});    };    grid.appendChild(b);  });}// ═══════════════════════════════════════════════// GAME// ═══════════════════════════════════════════════let playerScore = 0;
+}
+
+function play(key, vol=1, rate=1) {
+  if (!soundEnabled) return;
+  const buf = SND[key];
+  if (!buf) return;
+  try {
+    const ctx = getCtx();
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.playbackRate.value = rate;
+    const gain = ctx.createGain();
+    gain.gain.value = vol;
+    src.connect(gain);
+    gain.connect(ctx.destination);
+    src.start();
+  } catch(e) {}
+}
+
+function startBgMusic() {
+  if (bgAudio) {
+    if (!musicMuted && bgAudio.paused && !document.hidden) {
+      bgAudio.play().catch(() => {});
+    }
+    return;
+  }
+  bgAudio = new Audio('audio/bg_music.mp3');
+  bgAudio.loop = true;
+  bgAudio.volume = 0.28;
+  if (!musicMuted && !document.hidden) {
+    bgAudio.play().catch(() => {});
+  }
+}
+
+function stopBgMusic() {
+  if (bgAudio) {
+    bgAudio.pause();
+    bgAudio.currentTime = 0;
+  }
+}
+
+function toggleMusic() {
+  musicMuted = !musicMuted;
+  localStorage.setItem('ms_music_muted', musicMuted);
+  updateSoundButtonsUI();
+  
+  if (musicMuted) {
+    if (bgAudio) bgAudio.pause();
+  } else {
+    if (bgAudio) {
+      bgAudio.play().catch(() => {});
+    } else {
+      startBgMusic();
+    }
+    play('snd_click', 0.6);
+  }
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem('ms_sound_enabled', soundEnabled);
+  updateSoundButtonsUI();
+  if (soundEnabled) {
+    play('snd_click', 0.7);
+  }
+}
+
+function updateSoundButtonsUI() {
+  const musicBtn = document.getElementById('btn-toggle-music');
+  if (musicBtn) {
+    musicBtn.textContent = musicMuted ? '🔇 Music: OFF' : '🎵 Music: ON';
+    musicBtn.classList.toggle('muted', musicMuted);
+  }
+  const sfxBtn = document.getElementById('btn-toggle-sfx');
+  if (sfxBtn) {
+    sfxBtn.textContent = soundEnabled ? '🔊 SFX: ON' : '🔈 SFX: OFF';
+    sfxBtn.classList.toggle('muted', !soundEnabled);
+  }
+}
+
+// ── BACKGROUND TAB / WINDOW BLUR AUTO-MUTE ──
+// Immediately silence audio when Chrome loses focus, user switches tabs, or minimizes Chrome
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (bgAudio && !bgAudio.paused) {
+      bgAudio.pause();
+      wasPlayingBeforeBlur = true;
+    }
+  } else {
+    if (wasPlayingBeforeBlur && !musicMuted && bgAudio) {
+      bgAudio.play().catch(() => {});
+      wasPlayingBeforeBlur = false;
+    }
+  }
+});
+
+window.addEventListener('blur', () => {
+  if (bgAudio && !bgAudio.paused) {
+    bgAudio.pause();
+    wasPlayingBeforeBlur = true;
+  }
+});
+
+window.addEventListener('focus', () => {
+  if (wasPlayingBeforeBlur && !musicMuted && !document.hidden && bgAudio) {
+    bgAudio.play().catch(() => {});
+    wasPlayingBeforeBlur = false;
+  }
+});
+
+let soundsLoaded = false;
+async function initSounds() {
+  if (soundsLoaded) return;
+  soundsLoaded = true;
+  updateSoundButtonsUI();
+  await loadSnd("snd_click", "audio/snd_click.mp3");
+  await loadSnd("snd_hover", "audio/snd_hover.mp3");
+  await loadSnd("snd_flag", "audio/snd_flag.mp3");
+  await loadSnd("snd_menuopen", "audio/snd_menuopen.mp3");
+  await loadSnd("snd_menuclose", "audio/snd_menuclose.mp3");
+  await loadSnd("snd_shovel", "audio/snd_shovel.mp3");
+  await loadSnd("snd_bomb", "audio/snd_bomb.mp3");
+  await loadSnd("snd_victory", "audio/snd_victory.mp3");
+  startBgMusic();
+}
+
+document.addEventListener('click', initSounds, { once: true });
+document.addEventListener('keydown', initSounds, { once: true });
+
+// SCREEN MANAGEMENT// ═══════════════════════════════════════════════function showScreen(id) {  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));  document.getElementById('screen-'+id).classList.add('active');  document.getElementById('bg').style.display = (id === 'game') ? 'none' : 'block';  if (id === 'landing') play('snd_menuclose', 0.6);}function goSolo() {  play('snd_menuopen', 0.7);  buildSoloDiffGrid();  showScreen('solo');}function goMultiplayer() {  play('snd_menuopen', 0.7);  showScreen('multiplayer');}function startSolo() {  play('snd_menuopen', 0.8, 0.85);  gameOver = false;  playerScore = 0;  buildHUD();  buildBoard();  showScreen('game');  document.getElementById('result-overlay').classList.remove('show');  gsap.from('#board-wrap', {scale:.88, opacity:0, duration:.5, ease:'back.out(1.5)', delay:.05});  gsap.from('.hud', {y:-28, opacity:0, duration:.4, ease:'back.out(1.5)'});  startGameFX();}// ═══════════════════════════════════════════════// BUILD UI COMPONENTS// ═══════════════════════════════════════════════function buildAvatarRow() {  const row = document.getElementById('av-row');  row.innerHTML = '';  AVATARS.forEach(a => {    const b = document.createElement('button');    b.className = 'av-btn' + (a === selAvatar ? ' sel' : '');    b.textContent = a;    b.onclick = () => {      document.querySelectorAll('.av-btn').forEach(x => x.classList.remove('sel'));      b.classList.add('sel');      selAvatar = a;      gsap.fromTo(b, {scale:.7}, {scale:1, duration:.3, ease:'back.out(3)'});    };    row.appendChild(b);  });}function buildSoloDiffGrid() {  const grid = document.getElementById('solo-diff-grid');  grid.innerHTML = '';  Object.entries(DIFFS).forEach(([key, d]) => {    const b = document.createElement('div');    b.className = 'diff-btn' + (key === selDiff ? ' sel' : '');    b.innerHTML = `<span class="diff-emoji">${d.emoji}</span><div class="diff-label" style="color:${d.color}">${d.label}</div><div class="diff-desc">${d.desc}</div>`;    b.onclick = () => {      document.querySelectorAll('.diff-btn').forEach(x => x.classList.remove('sel'));      b.classList.add('sel');      selDiff = key;      gsap.fromTo(b,{scale:.9},{scale:1,duration:.25,ease:'back.out(2)'});    };    grid.appendChild(b);  });}// ═══════════════════════════════════════════════// GAME// ═══════════════════════════════════════════════let playerScore = 0;
 let firstClick = true;
 
 // ═══════════════════════════════════════════════
