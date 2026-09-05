@@ -1,4 +1,203 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MultiySweeper</title><link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script><script src="https://accounts.google.com/gsi/client" async></script><script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script><script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script><style>:root {  --sand:#f5dfa0; --sand-dark:#e8c96a; --sand-deep:#c8a84b;  --ocean:#0e7ab5; --ocean-deep:#094e75;  --mint:#2ecc71; --coral:#ff6b6b; --gold:#ffd700;  --wood:#8b5e3c; --wood-light:#c0845a;  --text-dark:#1a1008; --text-mid:#4a3520; --white:#fffef9;}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background:#0a3d5c;color:var(--text-dark)}/* ── BACKGROUND (landing/browse/lobby) ── */#bg{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,#87ceeb 0%,#a8e4f7 40%,#0e9bd4 55%,#0e7ab5 70%,#094e75 100%);overflow:hidden}.sun{position:absolute;top:8%;right:12%;width:80px;height:80px;background:radial-gradient(circle,#ffe066 30%,#ffb300 70%,transparent 100%);border-radius:50%;box-shadow:0 0 60px 20px rgba(255,200,0,.4)}.cloud{position:absolute;background:rgba(255,255,255,.85);border-radius:50px}.cloud::before,.cloud::after{content:'';position:absolute;background:rgba(255,255,255,.85);border-radius:50%}.c1{top:12%;left:8%;width:120px;height:38px}.c1::before{width:60px;height:55px;top:-28px;left:18px}.c1::after{width:45px;height:42px;top:-20px;left:55px}.c2{top:18%;left:35%;width:90px;height:28px}.c2::before{width:44px;height:40px;top:-22px;left:12px}.c2::after{width:35px;height:32px;top:-16px;left:42px}.c3{top:8%;left:60%;width:140px;height:44px}.c3::before{width:70px;height:62px;top:-34px;left:22px}.c3::after{width:52px;height:48px;top:-26px;left:70px}.wave-layer{position:absolute;bottom:0;left:-10%;width:120%;border-radius:50% 50% 0 0/30px}.wave1{background:rgba(255,255,255,.08);height:200px}.wave2{background:rgba(255,255,255,.06);height:160px;bottom:10px}.wave3{background:rgba(14,122,181,.4);height:120px;bottom:20px}.sand-strip{position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(180deg,var(--sand-dark) 0%,var(--sand) 60%,var(--sand-deep) 100%);border-radius:60% 60% 0 0/40px 40px 0 0}.palm{position:absolute;bottom:148px;right:6%;width:10px;height:140px;background:linear-gradient(180deg,var(--wood-light),var(--wood));border-radius:6px;transform:rotate(-4deg);transform-origin:bottom center}.palm-leaf{position:absolute;top:-8px;left:50%;width:80px;height:20px;background:#2d8a40;border-radius:0 50% 50% 50%;transform-origin:left center}.palm-leaf:nth-child(1){transform:translateX(-5px) rotate(-50deg)}.palm-leaf:nth-child(2){transform:translateX(-5px) rotate(-20deg);width:90px}.palm-leaf:nth-child(3){transform:translateX(-5px) rotate(10deg);width:85px}.palm-leaf:nth-child(4){transform:translateX(-5px) rotate(40deg);width:70px}.palm-leaf:nth-child(5){transform:translateX(-5px) rotate(65deg);width:60px}.bg-crab-static{position:absolute;bottom:152px;left:15%;font-size:28px;cursor:default;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}/* ── SCREENS ── */.screen{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}.screen.active{opacity:1;pointer-events:all}#screen-landing{flex-direction:column}/* ── GAME SCREEN — sandy background ── */#screen-game{  flex-direction:column;padding:10px;gap:10px;  position:relative;overflow:hidden;  background:linear-gradient(160deg,#e8d49a 0%,#d4b96a 50%,#b8922a 100%);}/* ── LOGO ── */.logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:28px}.logo-emoji{font-size:64px;display:block;margin-bottom:6px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}.logo-title{font-family:'Lilita One',cursive;font-size:clamp(52px,10vw,96px);color:#fff;text-shadow:0 4px 0 var(--wood),0 8px 0 rgba(0,0,0,.2),0 0 60px rgba(255,220,100,.6);letter-spacing:2px;line-height:1}.logo-sub{color:var(--sand);text-transform:uppercase;margin-top:8px;font-family:'Lilita One',cursive}/* ── CARD ── */.card{background:linear-gradient(160deg,rgba(255,253,240,.97),rgba(245,223,160,.97));border-radius:28px;padding:28px 36px;box-shadow:0 4px 24px rgba(139,94,60,.25),inset 0 1px 0 rgba(255,255,255,.8);border:2px solid rgba(255,255,255,.6);width:min(430px,93vw)}/* ── INPUTS ── */.input-label{color:var(--text-mid);display:block;margin-bottom:5px;font-family:'Lilita One',cursive;font-size:12px}.input-field{width:100%;padding:11px 15px;background:rgba(255,255,255,.75);border:2px solid var(--sand-dark);border-radius:12px;color:var(--text-dark);outline:none;transition:border-color .2s,box-shadow .2s;font-family:'Lilita One',cursive;letter-spacing:0.5px}.input-field:focus{border-color:var(--ocean);box-shadow:0 0 0 3px rgba(14,122,181,.2)}.input-row{margin-bottom:16px}.avatar-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}.av-btn{width:42px;height:42px;font-size:21px;background:rgba(255,255,255,.6);border:2px solid transparent;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}.av-btn:hover{transform:scale(1.15);background:rgba(255,255,255,.9)}.av-btn.sel{border-color:var(--ocean);background:rgba(14,122,181,.15);box-shadow:0 0 0 3px rgba(14,122,181,.2)}/* ── BUTTONS ── */.btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:13px 24px;border:none;border-radius:13px;cursor:pointer;transition:transform .12s,box-shadow .12s;white-space:nowrap;font-family:'Lilita One',cursive;letter-spacing:1px}.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}.btn-primary{background:linear-gradient(135deg,var(--ocean),var(--ocean-deep));color:#fff;box-shadow:0 4px 0 var(--ocean-deep),0 6px 20px rgba(9,78,117,.4);width:100%}.btn-secondary{background:linear-gradient(135deg,var(--sand),var(--sand-dark));color:var(--text-dark);box-shadow:0 4px 0 var(--sand-deep),0 6px 16px rgba(139,94,60,.2);width:100%}.btn-success{background:linear-gradient(135deg,var(--mint),#1a9e56);color:#fff;box-shadow:0 4px 0 #0d6e3a,0 6px 16px rgba(13,110,58,.3)}.btn-sm{padding:8px 16px;font-size:13px}.btn-row{display:flex;gap:9px}/* ── BROWSE ── */.section-title{font-family:'Lilita One',cursive;font-size:26px;color:var(--ocean-deep);margin-bottom:16px}.room-list{display:flex;flex-direction:column;gap:9px;margin-bottom:16px;max-height:50vh;overflow-y:auto}.room-card{background:rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.8);border-radius:13px;padding:13px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s}.room-card:hover{background:rgba(255,255,255,.9);transform:translateX(4px);border-color:var(--ocean)}.room-badge{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}.room-info{flex:1}.room-name{color:var(--text-dark);font-family:'Lilita One',cursive}.room-meta{font-size:11px;font-weight:600;color:var(--text-mid);margin-top:2px}.dot-row{display:flex;gap:3px}.dot{width:10px;height:10px;border-radius:50%;border:2px solid rgba(0,0,0,.1)}/* ── LOBBY ── */#screen-lobby .card{width:min(660px,95vw)}.diff-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0}.diff-btn{padding:9px 6px;border:2px solid transparent;border-radius:11px;background:rgba(255,255,255,.5);cursor:pointer;text-align:center;transition:all .15s;;font-family:'Lilita One',cursive}.diff-btn:hover{background:rgba(255,255,255,.85);transform:translateY(-2px)}.diff-btn.sel{border-color:var(--ocean);background:rgba(14,122,181,.1)}.diff-emoji{font-size:20px;display:block;margin-bottom:3px}.diff-label{;font-family:'Lilita One',cursive;font-size:11px}.diff-desc{font-size:9px;font-weight:600;color:var(--text-mid);margin-top:1px}.lobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}.lp-slot{background:rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.8);border-radius:13px;padding:12px;display:flex;align-items:center;gap:10px;transition:all .2s}.lp-slot.ready{border-color:var(--mint);background:rgba(46,204,113,.08)}.lp-slot.empty{opacity:.4;border-style:dashed}.lp-av{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}.lp-name{;font-family:'Lilita One',cursive;font-size:14px;letter-spacing:0.5px}.lp-status{;font-family:'Lilita One',cursive;letter-spacing:1px}.st-ready{color:var(--mint)}.st-wait{color:var(--sand-deep)}/* ── HUD ── */.hud{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(255,253,240,.95),rgba(245,223,160,.95));border-radius:18px;padding:9px 18px;box-shadow:0 4px 20px rgba(139,94,60,.25);border:2px solid rgba(255,255,255,.6);width:min(700px,98vw);flex-shrink:0;z-index:20;position:relative}.hud-stat{display:flex;align-items:center;gap:5px;font-weight:800;font-size:15px}.hud-spacer{flex:1}.player-badge{display:flex;align-items:center;gap:3px;background:rgba(255,255,255,.6);border-radius:20px;padding:3px 9px 3px 5px;font-size:11px;font-weight:700;border:2px solid transparent}/* ── BOARD ── */.board-wrap{  background:radial-gradient(ellipse at 30% 20%,rgba(255,240,180,.5) 0%,transparent 60%),linear-gradient(160deg,#d4aa4a 0%,#c09030 50%,#a87820 100%);  border-radius:24px;padding:14px;  box-shadow:0 8px 32px rgba(80,50,0,.4),inset 0 2px 0 rgba(255,240,160,.5);  border:2px solid rgba(200,160,60,.6);  overflow:auto;max-width:98vw;max-height:calc(100vh - 160px);  position:relative;z-index:20;  user-select:none;-webkit-user-select:none;}.board{display:grid;gap:3px;width:fit-content}/* ── TILES ── */.tile{  width:34px;height:34px;border-radius:7px;border:none;cursor:pointer;  position:relative;display:flex;align-items:center;justify-content:center;  font-family:'Lilita One',cursive;font-size:13px;font-weight:900;  user-select:none;-webkit-user-select:none;-webkit-user-drag:none;  -webkit-touch-callout:none;touch-action:manipulation;  transform-style:preserve-3d;transition:transform .08s;}.tile:hover{transform:scale(1.1);z-index:2}.t-hidden{  background:linear-gradient(135deg,#f0d87a 0%,#e2c45a 30%,#d4aa3a 60%,#c89830 100%);  box-shadow:0 4px 0 #9a6e1a,0 5px 8px rgba(120,80,0,.3),inset 0 1px 0 rgba(255,245,180,.7);}.t-hidden:hover{background:linear-gradient(135deg,#f8e898 0%,#eccf60 40%,#ddb840 100%);box-shadow:0 5px 0 #9a6e1a,0 6px 12px rgba(120,80,0,.35),inset 0 1px 0 rgba(255,250,200,.8)}.t-revealed{background:rgba(180,140,80,.3);box-shadow:inset 0 2px 6px rgba(100,60,0,.25);cursor:default}.t-revealed:hover{transform:none}.t-mine{background:linear-gradient(135deg,#ff6b6b,#cc2222)!important;box-shadow:0 0 16px rgba(255,50,50,.7)!important;cursor:default}.t-flag{background:linear-gradient(135deg,#f0d87a,#d4aa3a);box-shadow:0 4px 0 #9a6e1a}.n1{color:#1565c0}.n2{color:#2e7d32}.n3{color:#c62828}.n4{color:#4a148c}.n5{color:#b71c1c}.n6{color:#006064}.n7{color:#212121}.n8{color:#546e7a}/* ── PARTICLES ── */.particle{position:fixed;pointer-events:none;border-radius:50%;z-index:999}/* ── RESULT OVERLAY ── */.result-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .3s}.result-overlay.show{opacity:1;pointer-events:all}.result-card{background:linear-gradient(160deg,rgba(255,253,240,.98),rgba(245,223,160,.98));border-radius:28px;padding:38px;text-align:center;box-shadow:0 20px 80px rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.7);width:min(390px,90vw);transform:scale(.85);transition:transform .35s cubic-bezier(.34,1.56,.64,1)}.result-overlay.show .result-card{transform:scale(1)}.result-emoji{font-size:70px;display:block;margin-bottom:10px}.result-title{font-family:'Lilita One',cursive;font-size:40px;color:var(--ocean-deep);margin-bottom:6px}.result-sub{font-size:14px;font-weight:700;color:var(--text-mid);margin-bottom:22px}/* ── VOICE BADGE ── */.voice-badge{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(46,204,113,.2);color:#1a9e56;border:1px solid rgba(46,204,113,.4)}.voice-dot{width:6px;height:6px;border-radius:50%;background:var(--mint);animation:vp 1s ease-in-out infinite}@keyframes vp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}/* ── MODE PICKER ── */.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}.mode-card{background:rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.8);border-radius:16px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .18s}.mode-card:hover{background:rgba(255,255,255,.92);transform:translateY(-3px);border-color:var(--ocean);box-shadow:0 6px 20px rgba(14,122,181,.2)}.mode-emoji{font-size:32px;margin-bottom:6px}.mode-label{font-family:'Lilita One',cursive;font-size:16px;color:var(--ocean-deep);margin-bottom:3px}.mode-desc{font-size:11px;font-weight:600;color:var(--text-mid)}.mode-soon{font-size:10px;font-weight:800;color:var(--ocean);margin-top:5px;letter-spacing:.5px}/* ── SCROLLBAR ── */::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--sand-deep);border-radius:3px}/* ── LOGIN SCREEN ── */#screen-login{flex-direction:column;gap:0}.login-card{background:linear-gradient(160deg,rgba(255,253,240,.97),rgba(245,223,160,.97));border-radius:28px;padding:36px 40px;box-shadow:0 4px 24px rgba(139,94,60,.25),inset 0 1px 0 rgba(255,255,255,.8);border:2px solid rgba(255,255,255,.6);width:min(400px,92vw);display:flex;flex-direction:column;align-items:center;gap:0}.login-title{font-family:'Lilita One',cursive;font-size:22px;color:var(--ocean-deep);margin-bottom:6px;text-align:center}.login-sub{font-size:13px;font-weight:600;color:var(--text-mid);margin-bottom:24px;text-align:center}.google-btn{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid #dadce0;border-radius:12px;padding:12px 24px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:#3c4043;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.12);width:100%;justify-content:center}.google-btn:hover{box-shadow:0 4px 16px rgba(0,0,0,.18);transform:translateY(-2px);border-color:#bbb}.google-btn:active{transform:scale(.97)}.google-logo{width:22px;height:22px;flex-shrink:0}.divider{width:100%;height:1px;background:rgba(139,94,60,.2);margin:20px 0;position:relative}.divider::after{content:'or';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(160deg,rgba(255,253,240,.97),rgba(245,223,160,.97));padding:0 10px;font-size:11px;font-weight:700;color:var(--text-mid)}.guest-btn{background:linear-gradient(135deg,var(--sand),var(--sand-dark));color:var(--text-dark);box-shadow:0 4px 0 var(--sand-deep);border:none;border-radius:12px;padding:11px 24px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;width:100%;transition:all .15s}.guest-btn:hover{transform:translateY(-2px)}/* ── USER BADGE (shown when logged in) ── */.user-badge{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.8);border-radius:50px;padding:6px 14px 6px 6px;margin-bottom:14px}.user-pfp{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--ocean)}.user-name{font-weight:800;font-size:14px;color:var(--text-dark)}.user-signout{font-size:11px;font-weight:700;color:var(--text-mid);cursor:pointer;text-decoration:underline;margin-left:4px}.user-signout:hover{color:var(--coral)}/* ── GAME FX elements (injected by JS) ── */.gfx-shadow{position:absolute;pointer-events:none;z-index:1;border-radius:50%;will-change:transform}.gfx-crab{position:absolute;pointer-events:none;z-index:2;font-size:20px;line-height:1;will-change:transform;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MultiySweeper</title>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+:root {
+  --sand:#f5dfa0; --sand-dark:#e8c96a; --sand-deep:#c8a84b;
+  --ocean:#0e7ab5; --ocean-deep:#094e75;
+  --mint:#2ecc71; --coral:#ff6b6b; --gold:#ffd700;
+  --wood:#8b5e3c; --wood-light:#c0845a;
+  --text-dark:#1a1008; --text-mid:#4a3520; --white:#fffef9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background:#0a3d5c;color:var(--text-dark)}
+/* ── BACKGROUND (landing/browse/lobby) ── */
+#bg{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,#87ceeb 0%,#a8e4f7 38%,#38bdf8 52%,#0e9bd4 62%,#0e7ab5 76%,#094e75 100%);overflow:hidden;pointer-events:all}
+.sun{position:absolute;top:7%;right:12%;width:84px;height:84px;background:radial-gradient(circle,#fff3a8 20%,#ffd700 50%,#ff9800 85%,transparent 100%);border-radius:50%;box-shadow:0 0 65px 22px rgba(255,200,0,.5),0 0 110px 45px rgba(255,160,0,.25);cursor:pointer;z-index:1;transition:transform .3s;animation:sunGlow 4s ease-in-out infinite alternate}
+@keyframes sunGlow{0%{box-shadow:0 0 55px 18px rgba(255,200,0,.45),0 0 95px 35px rgba(255,160,0,.2)}100%{box-shadow:0 0 85px 30px rgba(255,220,0,.7),0 0 135px 55px rgba(255,140,0,.35)}}
+.sun:hover{transform:scale(1.12)}
+.cloud{position:absolute;background:rgba(255,255,255,.88);border-radius:50px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.06));z-index:2}
+.cloud::before,.cloud::after{content:'';position:absolute;background:rgba(255,255,255,.88);border-radius:50%}
+.c1{top:12%;left:8%;width:120px;height:38px}.c1::before{width:60px;height:55px;top:-28px;left:18px}.c1::after{width:45px;height:42px;top:-20px;left:55px}
+.c2{top:18%;left:36%;width:92px;height:30px}.c2::before{width:44px;height:40px;top:-22px;left:12px}.c2::after{width:35px;height:32px;top:-16px;left:42px}
+.c3{top:8%;left:62%;width:140px;height:44px}.c3::before{width:70px;height:62px;top:-34px;left:22px}.c3::after{width:52px;height:48px;top:-26px;left:70px}
+.wave-layer{position:absolute;bottom:0;left:-10%;width:120%;border-radius:50% 50% 0 0/30px;pointer-events:none}
+.wave1{background:linear-gradient(180deg,rgba(255,255,255,.3) 0%,rgba(14,155,212,.3) 100%);height:220px;bottom:0;z-index:1;animation:oceanWave1 7.5s ease-in-out infinite}
+.wave2{background:linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(14,122,181,.42) 100%);height:180px;bottom:14px;z-index:2;animation:oceanWave2 5.5s ease-in-out infinite reverse}
+.wave3{background:linear-gradient(180deg,rgba(255,255,255,.4) 0%,rgba(9,78,117,.55) 100%);height:140px;bottom:28px;z-index:3;animation:oceanWave3 9.5s ease-in-out infinite 1s}
+@keyframes oceanWave1{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-9px) scaleY(1.05)}}
+@keyframes oceanWave2{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-13px) scaleY(1.07)}}
+@keyframes oceanWave3{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-6px) scaleY(1.03)}}
+.sand-strip{position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(180deg,var(--sand-dark) 0%,var(--sand) 55%,var(--sand-deep) 100%);border-radius:60% 60% 0 0/40px 40px 0 0;box-shadow:0 -4px 18px rgba(0,0,0,.08);z-index:4}
+.palm{position:absolute;bottom:148px;right:6%;width:11px;height:145px;background:linear-gradient(180deg,var(--wood-light),var(--wood));border-radius:6px;transform:rotate(-4deg);transform-origin:bottom center;z-index:5;animation:palmSway 5.5s ease-in-out infinite alternate}
+@keyframes palmSway{0%{transform:rotate(-3deg)}100%{transform:rotate(-8deg)}}
+.palm-leaf{position:absolute;top:-8px;left:50%;width:82px;height:21px;background:linear-gradient(90deg,#1e7030,#2ecc71);border-radius:0 50% 50% 50%;transform-origin:left center;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.palm-leaf:nth-child(1){transform:translateX(-5px) rotate(-50deg)}
+.palm-leaf:nth-child(2){transform:translateX(-5px) rotate(-20deg);width:92px}
+.palm-leaf:nth-child(3){transform:translateX(-5px) rotate(10deg);width:88px}
+.palm-leaf:nth-child(4){transform:translateX(-5px) rotate(40deg);width:72px}
+.palm-leaf:nth-child(5){transform:translateX(-5px) rotate(65deg);width:62px}
+.bg-crab-static{position:absolute;bottom:150px;left:0;font-size:30px;cursor:pointer;z-index:6;user-select:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));will-change:transform;transition:filter .15s}
+.bg-crab-static.baby{bottom:136px;font-size:20px;opacity:.95}
+.bg-crab-static:hover{filter:drop-shadow(0 4px 10px rgba(255,107,107,.7)) scale(1.18)}
+.gfx-crab{position:absolute;pointer-events:auto;cursor:pointer;z-index:15;font-size:24px;line-height:1;will-change:transform;filter:drop-shadow(0 3px 5px rgba(0,0,0,.3));transition:filter .15s}
+.gfx-crab:hover{filter:drop-shadow(0 0 8px #ffd700) scale(1.25)}
+/* ── SCREENS ── */
+.screen{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.screen.active{opacity:1;pointer-events:all}
+#screen-landing{flex-direction:column}
+/* ── GAME SCREEN — sandy background ── */
+#screen-game{
+  flex-direction:column;padding:10px;gap:10px;
+  position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#e8d49a 0%,#d4b96a 50%,#b8922a 100%);
+}
+/* ── LOGO ── */
+.logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:28px}
+.logo-emoji{font-size:64px;display:block;margin-bottom:6px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}
+.logo-title{font-family:'Lilita One',cursive;font-size:clamp(52px,10vw,96px);color:#fff;text-shadow:0 4px 0 var(--wood),0 8px 0 rgba(0,0,0,.2),0 0 60px rgba(255,220,100,.6);letter-spacing:2px;line-height:1}
+.logo-sub{color:var(--sand);text-transform:uppercase;margin-top:8px;font-family:'Lilita One',cursive}
+/* ── CARD ── */
+.card{background:linear-gradient(160deg,rgba(255,253,240,.97),rgba(245,223,160,.97));border-radius:28px;padding:28px 36px;box-shadow:0 4px 24px rgba(139,94,60,.25),inset 0 1px 0 rgba(255,255,255,.8);border:2px solid rgba(255,255,255,.6);width:min(430px,93vw)}
+/* ── INPUTS ── */
+.input-label{color:var(--text-mid);display:block;margin-bottom:5px;font-family:'Lilita One',cursive;font-size:12px}
+.input-field{width:100%;padding:11px 15px;background:rgba(255,255,255,.75);border:2px solid var(--sand-dark);border-radius:12px;color:var(--text-dark);outline:none;transition:border-color .2s,box-shadow .2s;font-family:'Lilita One',cursive;letter-spacing:0.5px}
+.input-field:focus{border-color:var(--ocean);box-shadow:0 0 0 3px rgba(14,122,181,.2)}
+.input-row{margin-bottom:16px}
+.avatar-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.av-btn{width:42px;height:42px;font-size:21px;background:rgba(255,255,255,.6);border:2px solid transparent;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.av-btn:hover{transform:scale(1.15);background:rgba(255,255,255,.9)}
+.av-btn.sel{border-color:var(--ocean);background:rgba(14,122,181,.15);box-shadow:0 0 0 3px rgba(14,122,181,.2)}
+/* ── BUTTONS ── */
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:13px 24px;border:none;border-radius:13px;cursor:pointer;transition:transform .12s,box-shadow .12s;white-space:nowrap;font-family:'Lilita One',cursive;letter-spacing:1px}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--ocean),var(--ocean-deep));color:#fff;box-shadow:0 4px 0 var(--ocean-deep),0 6px 20px rgba(9,78,117,.4);width:100%}
+.btn-secondary{background:linear-gradient(135deg,var(--sand),var(--sand-dark));color:var(--text-dark);box-shadow:0 4px 0 var(--sand-deep),0 6px 16px rgba(139,94,60,.2);width:100%}
+.btn-success{background:linear-gradient(135deg,var(--mint),#1a9e56);color:#fff;box-shadow:0 4px 0 #0d6e3a,0 6px 16px rgba(13,110,58,.3)}
+.btn-sm{padding:8px 16px;font-size:13px}
+.btn-row{display:flex;gap:9px}
+/* ── BROWSE ── */
+.section-title{font-family:'Lilita One',cursive;font-size:26px;color:var(--ocean-deep);margin-bottom:16px}
+.room-list{display:flex;flex-direction:column;gap:9px;margin-bottom:16px;max-height:50vh;overflow-y:auto}
+.room-card{background:rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.8);border-radius:13px;padding:13px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s}
+.room-card:hover{background:rgba(255,255,255,.9);transform:translateX(4px);border-color:var(--ocean)}
+.room-badge{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.room-info{flex:1}
+.room-name{color:var(--text-dark);font-family:'Lilita One',cursive}
+.room-meta{font-size:11px;font-weight:600;color:var(--text-mid);margin-top:2px}
+.dot-row{display:flex;gap:3px}
+.dot{width:10px;height:10px;border-radius:50%;border:2px solid rgba(0,0,0,.1)}
+/* ── LOBBY ── */
+#screen-lobby .card{width:min(660px,95vw)}
+.diff-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0}
+.diff-btn{padding:9px 6px;border:2px solid transparent;border-radius:11px;background:rgba(255,255,255,.5);cursor:pointer;text-align:center;transition:all .15s;;font-family:'Lilita One',cursive}
+.diff-btn:hover{background:rgba(255,255,255,.85);transform:translateY(-2px)}
+.diff-btn.sel{border-color:var(--ocean);background:rgba(14,122,181,.1)}
+.diff-emoji{font-size:20px;display:block;margin-bottom:3px}
+.diff-label{;font-family:'Lilita One',cursive;font-size:11px}
+.diff-desc{font-size:9px;font-weight:600;color:var(--text-mid);margin-top:1px}
+.lobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}
+.lp-slot{background:rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.8);border-radius:13px;padding:12px;display:flex;align-items:center;gap:10px;transition:all .2s}
+.lp-slot.ready{border-color:var(--mint);background:rgba(46,204,113,.08)}
+.lp-slot.empty{opacity:.4;border-style:dashed}
+.lp-av{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.lp-name{;font-family:'Lilita One',cursive;font-size:14px;letter-spacing:0.5px}
+.lp-status{;font-family:'Lilita One',cursive;letter-spacing:1px}
+.st-ready{color:var(--mint)}.st-wait{color:var(--sand-deep)}
+/* ── HUD ── */
+.hud{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(255,253,240,.95),rgba(245,223,160,.95));border-radius:18px;padding:9px 18px;box-shadow:0 4px 20px rgba(139,94,60,.25);border:2px solid rgba(255,255,255,.6);width:min(700px,98vw);flex-shrink:0;z-index:20;position:relative}
+.hud-stat{display:flex;align-items:center;gap:5px;font-weight:800;font-size:15px}
+.hud-spacer{flex:1}
+.player-badge{display:flex;align-items:center;gap:3px;background:rgba(255,255,255,.6);border-radius:20px;padding:3px 9px 3px 5px;font-size:11px;font-weight:700;border:2px solid transparent}
+/* ── BOARD ── */
+.board-wrap{
+  background:radial-gradient(ellipse at 30% 20%,rgba(255,240,180,.5) 0%,transparent 60%),linear-gradient(160deg,#d4aa4a 0%,#c09030 50%,#a87820 100%);
+  border-radius:24px;padding:14px;
+  box-shadow:0 8px 32px rgba(80,50,0,.4),inset 0 2px 0 rgba(255,240,160,.5);
+  border:2px solid rgba(200,160,60,.6);
+  overflow:auto;max-width:98vw;max-height:calc(100vh - 160px);
+  position:relative;z-index:20;
+  user-select:none;-webkit-user-select:none;
+}
+.board{display:grid;gap:3px;width:fit-content}
+/* ── TILES ── */
+.tile{
+  width:34px;height:34px;border-radius:7px;border:none;cursor:pointer;
+  position:relative;display:flex;align-items:center;justify-content:center;
+  font-family:'Lilita One',cursive;font-size:13px;font-weight:900;
+  user-select:none;-webkit-user-select:none;-webkit-user-drag:none;
+  -webkit-touch-callout:none;touch-action:manipulation;
+  transform-style:preserve-3d;transition:transform .08s;
+}
+.tile:hover{transform:scale(1.1);z-index:2}
+.t-hidden{
+  background:linear-gradient(135deg,#f0d87a 0%,#e2c45a 30%,#d4aa3a 60%,#c89830 100%);
+  box-shadow:0 4px 0 #9a6e1a,0 5px 8px rgba(120,80,0,.3),inset 0 1px 0 rgba(255,245,180,.7);
+}
+.t-hidden:hover{background:linear-gradient(135deg,#f8e898 0%,#eccf60 40%,#ddb840 100%);box-shadow:0 5px 0 #9a6e1a,0 6px 12px rgba(120,80,0,.35),inset 0 1px 0 rgba(255,250,200,.8)}
+.t-revealed{background:rgba(180,140,80,.3);box-shadow:inset 0 2px 6px rgba(100,60,0,.25);cursor:default}
+.t-revealed:hover{transform:none}
+.t-mine{background:linear-gradient(135deg,#ff6b6b,#cc2222)!important;box-shadow:0 0 16px rgba(255,50,50,.7)!important;cursor:default}
+.t-flag{background:linear-gradient(135deg,#f0d87a,#d4aa3a);box-shadow:0 4px 0 #9a6e1a}
+.n1{color:#1565c0}.n2{color:#2e7d32}.n3{color:#c62828}.n4{color:#4a148c}
+.n5{color:#b71c1c}.n6{color:#006064}.n7{color:#212121}.n8{color:#546e7a}
+/* ── PARTICLES ── */
+.particle{position:fixed;pointer-events:none;border-radius:50%;z-index:999}
+/* ── RESULT OVERLAY ── */
+.result-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .3s}
+.result-overlay.show{opacity:1;pointer-events:all}
+.result-card{background:linear-gradient(160deg,rgba(255,253,240,.98),rgba(245,223,160,.98));border-radius:28px;padding:38px;text-align:center;box-shadow:0 20px 80px rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.7);width:min(390px,90vw);transform:scale(.85);transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.result-overlay.show .result-card{transform:scale(1)}
+.result-emoji{font-size:70px;display:block;margin-bottom:10px}
+.result-title{font-family:'Lilita One',cursive;font-size:40px;color:var(--ocean-deep);margin-bottom:6px}
+.result-sub{font-size:14px;font-weight:700;color:var(--text-mid);margin-bottom:22px}
+/* ── VOICE BADGE ── */
+.voice-badge{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(46,204,113,.2);color:#1a9e56;border:1px solid rgba(46,204,113,.4)}
+.voice-dot{width:6px;height:6px;border-radius:50%;background:var(--mint);animation:vp 1s ease-in-out infinite}
+@keyframes vp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+/* ── MODE PICKER ── */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.mode-card{background:rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.8);border-radius:16px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .18s}
+.mode-card:hover{background:rgba(255,255,255,.92);transform:translateY(-3px);border-color:var(--ocean);box-shadow:0 6px 20px rgba(14,122,181,.2)}
+.mode-emoji{font-size:32px;margin-bottom:6px}
+.mode-label{font-family:'Lilita One',cursive;font-size:16px;color:var(--ocean-deep);margin-bottom:3px}
+.mode-desc{font-size:11px;font-weight:600;color:var(--text-mid)}
+.mode-soon{font-size:10px;font-weight:800;color:var(--ocean);margin-top:5px;letter-spacing:.5px}
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--sand-deep);border-radius:3px}
+/* ── LOGIN SCREEN ── */
+#screen-login{flex-direction:column;gap:0}
+.login-card{background:linear-gradient(160deg,rgba(255,253,240,.97),rgba(245,223,160,.97));border-radius:28px;padding:36px 40px;box-shadow:0 4px 24px rgba(139,94,60,.25),inset 0 1px 0 rgba(255,255,255,.8);border:2px solid rgba(255,255,255,.6);width:min(400px,92vw);display:flex;flex-direction:column;align-items:center;gap:0}
+.login-title{font-family:'Lilita One',cursive;font-size:22px;color:var(--ocean-deep);margin-bottom:6px;text-align:center}
+.login-sub{font-size:13px;font-weight:600;color:var(--text-mid);margin-bottom:24px;text-align:center}
+.google-btn{display:flex;align-items:center;gap:12px;background:#fff;border:2px solid #dadce0;border-radius:12px;padding:12px 24px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:#3c4043;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.12);width:100%;justify-content:center}
+.google-btn:hover{box-shadow:0 4px 16px rgba(0,0,0,.18);transform:translateY(-2px);border-color:#bbb}
+.google-btn:active{transform:scale(.97)}
+.google-logo{width:22px;height:22px;flex-shrink:0}
+.divider{width:100%;height:1px;background:rgba(139,94,60,.2);margin:20px 0;position:relative}
+.divider::after{content:'or';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(160deg,rgba(255,253,240,.97),rgba(245,223,160,.97));padding:0 10px;font-size:11px;font-weight:700;color:var(--text-mid)}
+.guest-btn{background:linear-gradient(135deg,var(--sand),var(--sand-dark));color:var(--text-dark);box-shadow:0 4px 0 var(--sand-deep);border:none;border-radius:12px;padding:11px 24px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;width:100%;transition:all .15s}
+.guest-btn:hover{transform:translateY(-2px)}
+/* ── USER BADGE (shown when logged in) ── */
+.user-badge{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.6);border:2px solid rgba(255,255,255,.8);border-radius:50px;padding:6px 14px 6px 6px;margin-bottom:14px}
+.user-pfp{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--ocean)}
+.user-name{font-weight:800;font-size:14px;color:var(--text-dark)}
+.user-signout{font-size:11px;font-weight:700;color:var(--text-mid);cursor:pointer;text-decoration:underline;margin-left:4px}
+.user-signout:hover{color:var(--coral)}
+/* ── GAME FX elements (injected by JS) ── */
+.gfx-shadow{position:absolute;pointer-events:none;z-index:1;border-radius:50%;will-change:transform}
+.gfx-crab{position:absolute;pointer-events:none;z-index:2;font-size:20px;line-height:1;will-change:transform;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
+
 /* ── LEADERBOARD SCREEN ── */
 #screen-leaderboard .card { width: min(580px, 95vw); }
 .lb-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
@@ -429,7 +628,9 @@
   100% { transform: scale(1.2); }
 }
 
-</style></head><body>
+</style>
+</head>
+<body>
 
 <!-- IN-SITE AUDIO CONTROLS & SOCIAL BAR -->
 <div class="sound-controls-bar">
@@ -437,14 +638,96 @@
   <button class="sound-btn" id="btn-toggle-friends" onclick="toggleFriendsDrawer()">👥 Online & Friends</button>
   <button class="sound-btn" id="btn-toggle-music" onclick="toggleMusic()">🎵 Music: ON</button>
   <button class="sound-btn" id="btn-toggle-sfx" onclick="toggleSound()">🔊 SFX: ON</button>
-</div>  <div class="bg-crab-static">🦀</div></div><!-- LOGIN --><div id="screen-login" class="screen">  <div class="logo-wrap">    <span class="logo-emoji">🪣</span>    <h1 class="logo-title">MultiySweeper</h1>    <p class="logo-sub">Multiplayer · Mine Hunting</p>  </div>  <div class="login-card">    <div class="login-title">Welcome, Beach Hunter!</div>    <div class="login-sub">Sign in to save your score and sweep some mines</div>    <button class="google-btn" onclick="signInWithGoogle()">      <svg class="google-logo" viewBox="0 0 24 24">        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>      </svg>      Continue with Google    </button>    <div class="divider"></div>    <button class="guest-btn" onclick="signInAsGuest()">👤 Play as Guest</button>  </div></div><!-- LANDING --><div id="screen-landing" class="screen">  <div class="logo-wrap">    <span class="logo-emoji" id="shovel">🪣</span>    <h1 class="logo-title">MultiySweeper</h1>  </div>  <div class="card">    <div class="user-badge" id="user-badge" style="display:none">      <img class="user-pfp" id="user-pfp" src="" alt="pfp">      <span class="user-name" id="user-name"></span>      <span class="user-signout" onclick="signOut()">sign out</span>    </div>    <div class="input-row">      <label class="input-label">Your Nickname</label>      <input class="input-field" id="inp-nick" value="BeachBomber42" maxlength="20">    </div>    <div class="input-row" id="av-wrap">      <label class="input-label">Pick Avatar</label>      <div class="avatar-row" id="av-row"></div>    </div>    <label class="input-label" style="margin-bottom:8px">Select Mode</label>    
+</div>
+
+<!-- STATIC & ANIMATED BEACH BG -->
+<div id="bg">
+  <div class="sun" id="beach-sun" title="Sunny Beach! Click for +1 🐚"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+  <div class="wave-layer wave1"></div>
+  <div class="wave-layer wave2"></div>
+  <div class="wave-layer wave3"></div>
+  <div class="sand-strip"></div>
+  <div class="palm">
+    <div class="palm-leaf"></div>
+    <div class="palm-leaf"></div>
+    <div class="palm-leaf"></div>
+    <div class="palm-leaf"></div>
+    <div class="palm-leaf"></div>
+  </div>
+  <div class="bg-crab-static bg-crab-walker" id="beach-crab-1" title="Beach Crab! Click me! 🦀">🦀</div>
+  <div class="bg-crab-static bg-crab-walker baby" id="beach-crab-2" title="Baby Crab! Click me! 🦀">🦀</div>
+</div>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen">
+  <div class="logo-wrap">
+    <span class="logo-emoji">🪣</span>
+    <h1 class="logo-title">MultiySweeper</h1>
+    <p class="logo-sub">Multiplayer · Mine Hunting</p>
+  </div>
+  <div class="login-card">
+    <div class="login-title">Welcome, Beach Hunter!</div>
+    <div class="login-sub">Sign in to save your score and sweep some mines</div>
+    <button class="google-btn" onclick="signInWithGoogle()">
+      <svg class="google-logo" viewBox="0 0 24 24">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </button>
+    <div class="divider"></div>
+    <button class="guest-btn" onclick="signInAsGuest()">👤 Play as Guest</button>
+  </div>
+</div>
+<!-- LANDING -->
+<div id="screen-landing" class="screen">
+  <div class="logo-wrap">
+    <span class="logo-emoji" id="shovel">🪣</span>
+    <h1 class="logo-title">MultiySweeper</h1>
+  </div>
+  <div class="card">
+    <div class="user-badge" id="user-badge" style="display:none">
+      <img class="user-pfp" id="user-pfp" src="" alt="pfp">
+      <span class="user-name" id="user-name"></span>
+      <span class="user-signout" onclick="signOut()">sign out</span>
+    </div>
+    <div class="input-row">
+      <label class="input-label">Your Nickname</label>
+      <input class="input-field" id="inp-nick" value="BeachBomber42" maxlength="20">
+    </div>
+    <div class="input-row" id="av-wrap">
+      <label class="input-label">Pick Avatar</label>
+      <div class="avatar-row" id="av-row"></div>
+    </div>
+    <label class="input-label" style="margin-bottom:8px">Select Mode</label>
+    
     
     <div class="landing-pill-row">
       <button class="pill-btn" onclick="showLeaderboard()">🏆 Leaderboard (Top 100)</button>
       <button class="pill-btn" onclick="showPlayerProfile()">👤 My Profile</button>
     </div>
 
-    <div class="mode-grid" style="margin-top: 10px;">      <div class="mode-card" onclick="goSolo()">        <div class="mode-emoji">🏝️</div>        <div class="mode-label">Solo</div>        <div class="mode-desc">Play alone, beat your score</div>      </div>      <div class="mode-card multiplayer-card" onclick="goMultiplayer()">        <div class="mode-emoji">🌊</div>        <div class="mode-label">Multiplayer</div>        <div class="mode-desc">Play with real players online</div>        <div class="mode-soon">🔌 Needs server</div>      </div>    </div>  </div></div>
+    <div class="mode-grid" style="margin-top: 10px;">
+      <div class="mode-card" onclick="goSolo()">
+        <div class="mode-emoji">🏝️</div>
+        <div class="mode-label">Solo</div>
+        <div class="mode-desc">Play alone, beat your score</div>
+      </div>
+      <div class="mode-card multiplayer-card" onclick="goMultiplayer()">
+        <div class="mode-emoji">🌊</div>
+        <div class="mode-label">Multiplayer</div>
+        <div class="mode-desc">Play with real players online</div>
+        <div class="mode-soon">🔌 Needs server</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- LEADERBOARD SCREEN -->
 
 <!-- GLOBAL TOP-100 LEADERBOARD SCREEN -->
@@ -590,7 +873,19 @@
 </div>
 
 
-<!-- SOLO DIFFICULTY --><div id="screen-solo" class="screen">  <div class="card" style="width:min(480px,94vw)">    <div class="section-title">🏝️ Solo Mode</div>    <label class="input-label" style="margin-bottom:8px">Choose Difficulty</label>    <div class="diff-grid" id="solo-diff-grid"></div>    <div class="btn-row" style="margin-top:8px">      <button class="btn btn-secondary" onclick="showScreen('landing')">← Back</button>      <button class="btn btn-primary" style="flex:1" onclick="startSolo()">▶ Start Solo</button>    </div>  </div></div><!-- MULTIPLAYER CO-OP MENU (PeerJS WebRTC P2P) -->
+<!-- SOLO DIFFICULTY -->
+<div id="screen-solo" class="screen">
+  <div class="card" style="width:min(480px,94vw)">
+    <div class="section-title">🏝️ Solo Mode</div>
+    <label class="input-label" style="margin-bottom:8px">Choose Difficulty</label>
+    <div class="diff-grid" id="solo-diff-grid"></div>
+    <div class="btn-row" style="margin-top:8px">
+      <button class="btn btn-secondary" onclick="showScreen('landing')">← Back</button>
+      <button class="btn btn-primary" style="flex:1" onclick="startSolo()">▶ Start Solo</button>
+    </div>
+  </div>
+</div>
+<!-- MULTIPLAYER CO-OP MENU (PeerJS WebRTC P2P) -->
 <div id="screen-multiplayer" class="screen">
   <div class="card" style="width:min(460px,94vw);text-align:center">
     <div style="font-size:44px;margin-bottom:6px">🌊</div>
@@ -690,7 +985,9 @@
     </div>
   </div>
 </div>
-<!-- GAME --><div id="screen-game" class="screen">    <div class="hud" id="hud">
+<!-- GAME -->
+<div id="screen-game" class="screen">
+    <div class="hud" id="hud">
     <div class="hud-stat">💣 <span id="hud-mines">40</span></div>
     <div class="hud-stat" style="margin-left:12px;color:var(--ocean-deep);">⏱️ <span id="hud-timer">00:00</span></div>
     <div class="hud-spacer"></div>
@@ -698,7 +995,11 @@
     <div class="hud-spacer"></div>
     <button class="btn btn-secondary btn-sm" onclick="showScreen('landing')">⚑ Quit</button>
   </div>
-  <div class="board-wrap" id="board-wrap">    <div class="board" id="board"></div>  </div></div>
+  <div class="board-wrap" id="board-wrap">
+    <div class="board" id="board"></div>
+  </div>
+</div>
+
 <!-- CHAT DRAWER -->
 <div id="chat-drawer" style="position:fixed;top:0;right:-320px;width:300px;height:100%;background:linear-gradient(180deg,rgba(255,253,240,.98),rgba(245,223,160,.98));box-shadow:-6px 0 28px rgba(0,0,0,.25);border-left:2px solid rgba(255,255,255,.8);z-index:650;display:flex;flex-direction:column;transition:right .28s cubic-bezier(0.4,0,0.2,1);padding:14px;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:2px solid var(--sand-dark);padding-bottom:6px;">
@@ -715,7 +1016,8 @@
   💬 Chat <span id="chat-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;">0</span>
 </button>
 
-<!-- RESULT --><div class="result-overlay" id="result-overlay">
+<!-- RESULT -->
+<div class="result-overlay" id="result-overlay">
   <div class="result-card">
     <span class="result-emoji" id="res-emoji">🏆</span>
     <div class="result-title" id="res-title">Beach Cleared!</div>
@@ -3304,6 +3606,18 @@
       el.style.display = 'none';
       el.style.top = '0px';
       el.style.left = '0px';
+      el.title = 'Beach Crab! Click for +1 🐚';
+      el.onclick = (e) => {
+        e.stopPropagation();
+        try { play('snd_flag', 0.8); } catch(err) {}
+        addShells(1);
+        showFloatingText(e.clientX, e.clientY, '+1 🐚');
+        if (window.gsap) {
+          gsap.timeline()
+            .to(el, { scale: 1.4, y: '-=28', duration: 0.18, ease: 'power2.out' })
+            .to(el, { scale: 1, y: '+=28', duration: 0.22, ease: 'bounce.out' });
+        }
+      };
       wrap.appendChild(el);
       crabs.push({ el, active: false, x: 0, y: 0, dir: 1, speed: 0, wobble: 0, wSpd: 0, wAmp: 0 });
     }
@@ -3352,7 +3666,8 @@
         c.x += c.dir * c.speed * dt;
         c.wobble += c.wSpd * dt;
         const dy = Math.sin(c.wobble) * c.wAmp;
-        c.el.style.transform = 'translateX(' + c.x + 'px) translateY(' + dy + 'px) scaleX(' + (c.dir < 0 ? -1 : 1) + ')';
+        const tilt = Math.sin(c.wobble) * 11;
+        c.el.style.transform = 'translateX(' + c.x + 'px) translateY(' + dy + 'px) scaleX(' + (c.dir < 0 ? -1 : 1) + ') rotate(' + tilt + 'deg)';
         if ((c.dir > 0 && c.x > W + 70) || (c.dir < 0 && c.x < -70)) {
           c.active = false;
           c.el.style.display = 'none';
@@ -3368,14 +3683,118 @@
     crabs.forEach(c => { c.active = false; c.el.style.display = 'none'; });
   }
 
+  function showFloatingText(x, y, text) {
+    try {
+      const el = document.createElement('div');
+      el.textContent = text;
+      el.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;transform:translate(-50%,-50%);font-family:\'Lilita One\',cursive;font-size:18px;color:#ffd700;text-shadow:0 2px 5px rgba(0,0,0,.6),0 0 12px rgba(255,215,0,.8);pointer-events:none;z-index:9999;transition:transform .85s cubic-bezier(0.2,0.9,0.3,1),opacity .85s ease;';
+      document.body.appendChild(el);
+      requestAnimationFrame(() => {
+        el.style.transform = 'translate(-50%,-75px) scale(1.25)';
+        el.style.opacity = '0';
+      });
+      setTimeout(() => el.remove(), 900);
+    } catch(e) {}
+  }
+
+  function initBeachCrabs() {
+    const beachCrabs = [
+      { id: 'beach-crab-1', minX: 0.06, maxX: 0.65, x: 0.14, speed: 38, baseSpeed: 38, dir: 1, baby: false },
+      { id: 'beach-crab-2', minX: 0.22, maxX: 0.84, x: 0.38, speed: 48, baseSpeed: 48, dir: -1, baby: true }
+    ];
+
+    beachCrabs.forEach(c => {
+      const el = document.getElementById(c.id);
+      if (!el) return;
+
+      el.onclick = (e) => {
+        e.stopPropagation();
+        try { play('snd_flag', 0.8); } catch(err) {}
+        addShells(1);
+        const rect = el.getBoundingClientRect();
+        showFloatingText(rect.left + rect.width / 2, rect.top, '+1 🐚');
+        
+        // Joyful jump & claw pinch
+        if (window.gsap) {
+          gsap.timeline()
+            .to(el, { y: -36, rotation: c.dir * 22, duration: 0.22, ease: 'power2.out' })
+            .to(el, { y: 0, rotation: 0, duration: 0.28, ease: 'bounce.out' });
+        }
+        // Temporary dash
+        c.speed = 115;
+        setTimeout(() => { c.speed = c.baseSpeed; }, 3200);
+      };
+    });
+
+    const sun = document.getElementById('beach-sun');
+    if (sun) {
+      sun.onclick = (e) => {
+        e.stopPropagation();
+        try { play('snd_clear', 0.7); } catch(err) {}
+        addShells(1);
+        const rect = sun.getBoundingClientRect();
+        showFloatingText(rect.left + rect.width / 2, rect.bottom + 20, '☀️ Warm Sunshine! +1 🐚');
+        if (window.gsap) {
+          gsap.timeline()
+            .to(sun, { scale: 1.25, duration: 0.2, ease: 'back.out(2)' })
+            .to(sun, { scale: 1, duration: 0.3, ease: 'power2.out' });
+        }
+      };
+    }
+
+    let lastTime = performance.now();
+    const pauseUntil = { 'beach-crab-1': 0, 'beach-crab-2': 0 };
+
+    function scuttleLoop(now) {
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+      const screenW = Math.max(window.innerWidth || 800, 400);
+
+      beachCrabs.forEach(c => {
+        const el = document.getElementById(c.id);
+        if (!el) return;
+
+        if (now < pauseUntil[c.id]) {
+          // Paused: subtle claw pinch / breathing wobble
+          const wiggle = Math.sin(now * 0.007) * 3;
+          el.style.transform = 'translateX(' + (c.x * screenW) + 'px) scaleX(' + c.dir + ') rotate(' + wiggle + 'deg)';
+          return;
+        }
+
+        c.x += (c.dir * c.speed * dt) / screenW;
+        const stepPhase = now * 0.016 * (c.speed / 38);
+        const wobble = Math.sin(stepPhase) * 8;
+        const bob = Math.abs(Math.cos(stepPhase)) * 3.5;
+
+        if (c.dir > 0 && c.x >= c.maxX) {
+          c.dir = -1;
+          c.x = c.maxX;
+          pauseUntil[c.id] = now + 1400 + Math.random() * 2200;
+        } else if (c.dir < 0 && c.x <= c.minX) {
+          c.dir = 1;
+          c.x = c.minX;
+          pauseUntil[c.id] = now + 1400 + Math.random() * 2200;
+        } else if (Math.random() < 0.0018) {
+          // Playful pause
+          pauseUntil[c.id] = now + 1000 + Math.random() * 1600;
+        }
+
+        el.style.transform = 'translateX(' + (c.x * screenW) + 'px) translateY(' + (-bob) + 'px) scaleX(' + c.dir + ') rotate(' + wobble + 'deg)';
+      });
+
+      requestAnimationFrame(scuttleLoop);
+    }
+    requestAnimationFrame(scuttleLoop);
+  }
+
   function animateBg() {
-    if (!window.gsap) return;
-    gsap.to('.c1', { x: 32, duration: 12, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-    gsap.to('.c2', { x: -22, duration: 9, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3 });
-    gsap.to('.c3', { x: 28, duration: 15, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1 });
-    gsap.to('.sun', { boxShadow: '0 0 90px 30px rgba(255,200,0,.6)', duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut' });
-    gsap.to('.bg-crab-static', { x: 42, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2 });
-    gsap.to('.palm', { rotation: -7, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut', transformOrigin: 'bottom center' });
+    if (window.gsap) {
+      gsap.to('.c1', { x: 42, duration: 14, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      gsap.to('.c2', { x: -32, duration: 10, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2 });
+      gsap.to('.c3', { x: 38, duration: 18, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1 });
+      gsap.to('.palm', { rotation: -8, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut', transformOrigin: 'bottom center' });
+    }
+    initBeachCrabs();
   }
 
   function landingEntrance() {
